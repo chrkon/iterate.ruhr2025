@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joke API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .joke-button {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            transition: all 0.3s ease;
+            margin: 20px;
+        }
+
+        .joke-button:hover {
+            background: linear-gradient(135deg, #45a049, #4CAF50);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .joke-button:active {
+            transform: translateY(0);
+        }
+
+        .joke-display {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            min-height: 60px;
+            display: none;
+        }
+
+        .joke-text {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .joke-category {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .loading {
+            color: #667eea;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Joke Generator</h1>
+        <button class="joke-button" onclick="getNewJoke()">Neuer Joke</button>
+        <div id="jokeDisplay" class="joke-display">
+            <div id="jokeText" class="joke-text"></div>
+            <div id="jokeCategory" class="joke-category"></div>
+        </div>
+    </div>
+
+    <script>
+        async function getNewJoke() {
+            const jokeDisplay = document.getElementById('jokeDisplay');
+            const jokeText = document.getElementById('jokeText');
+            const jokeCategory = document.getElementById('jokeCategory');
+            
+            // Show loading
+            jokeDisplay.style.display = 'block';
+            jokeText.innerHTML = '<span class="loading">Lade neuen Joke...</span>';
+            jokeCategory.innerHTML = '';
+            
+            try {
+                const response = await fetch('/api/jokes');
+                if (response.ok) {
+                    const joke = await response.json();
+                    jokeText.innerHTML = joke.text;
+                    jokeCategory.innerHTML = `Kategorie: ${joke.category}`;
+                } else {
+                    jokeText.innerHTML = '❌ Fehler beim Laden des Jokes';
+                    jokeCategory.innerHTML = '';
+                }
+            } catch (error) {
+                jokeText.innerHTML = '❌ Netzwerkfehler beim Laden des Jokes';
+                jokeCategory.innerHTML = '';
+                console.error('Error fetching joke:', error);
+            }
+        }
+    </script>
+</body>
+</html>
