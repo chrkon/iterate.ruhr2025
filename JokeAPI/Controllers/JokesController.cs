@@ -28,4 +28,36 @@ public class JokesController : ControllerBase
             var randomJoke = _jokes[random.Next(_jokes.Count)];
             return Ok(randomJoke);
         }
+
+        [HttpGet("export/tsv")]
+        public IActionResult ExportToTsv()
+        {
+            var tsvContent = GenerateTsvContent();
+            var fileName = $"jokes_export_{DateTime.Now:yyyyMMdd_HHmmss}.tsv";
+            
+            return File(
+                System.Text.Encoding.UTF8.GetBytes(tsvContent),
+                "text/tab-separated-values",
+                fileName
+            );
+        }
+
+        private string GenerateTsvContent()
+        {
+            var lines = new List<string>();
+            
+            // Add header
+            lines.Add("Id\tText\tCategory");
+            
+            // Add data rows
+            foreach (var joke in _jokes)
+            {
+                // Escape any tab characters in the text to prevent format issues
+                var escapedText = joke.Text.Replace("\t", "    ");
+                var escapedCategory = joke.Category.Replace("\t", "    ");
+                lines.Add($"{joke.Id}\t{escapedText}\t{escapedCategory}");
+            }
+            
+            return string.Join("\n", lines);
+        }
     }
