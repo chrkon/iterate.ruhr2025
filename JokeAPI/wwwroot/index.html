@@ -48,7 +48,6 @@
         }
 
         .joke-button:hover {
-            background: linear-gradient(135deg, #45a049, #4CAF50);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
         }
@@ -89,6 +88,7 @@
     <div class="container">
         <h1>🎭 Joke Generator</h1>
         <button class="joke-button" onclick="getNewJoke()">Neuer Joke</button>
+        <button class="joke-button" onclick="exportJokes()" style="background: linear-gradient(135deg, #FF6B6B, #FF5252);">📥 Jokes als TSV exportieren</button>
         <div id="jokeDisplay" class="joke-display">
             <div id="jokeText" class="joke-text"></div>
             <div id="jokeCategory" class="joke-category"></div>
@@ -121,6 +121,16 @@
                 jokeCategory.innerHTML = '';
                 console.error('Error fetching joke:', error);
             }
+        }
+
+        function exportJokes() {
+            // Create a link and trigger download
+            const link = document.createElement('a');
+            link.href = '/api/jokes/export/tsv';
+            link.download = ''; // Let the server determine the filename
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
